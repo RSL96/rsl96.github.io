@@ -1,0 +1,12 @@
+”ƒјЋ»“№ Ё“» —“–ќ » »« JS файла, чтобы отключить закрытие окна по нажатию мышкой на неактивную область!
+/**
+   * Mouse down on overlay
+   * @param  {L.MouseEvent} evt
+   */
+  _onMouseDown: function(evt) {
+    L.DomEvent.stop(evt);
+    var target = (evt.target || evt.srcElement);
+    if (L.DomUtil.hasClass(target, this.options.MODAL_CLS)) {
+      this._hide();
+    }
+  },

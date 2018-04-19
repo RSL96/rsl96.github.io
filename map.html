@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<!--Кодировка страницы-->
+	<meta charset="UTF-8">
+	<!--Описание страницы-->
+	<meta name="description" content="Карта исторических мест г. Красноярска">
+	<!--Ключевые слова страницы-->
+	<meta name="keywords" content="Красноярск, история, карта">
+	<!--Автор страницы-->
+	<meta name="author" content="Сергей Рутц">
+	<!--Обновление страницы каждые 120 секунд-->
+	<!--<meta http-equiv="refresh" content="120">-->
+	<!--Настройка просмотра страницы на мобильных устройствах-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<!--Заголовок страницы-->
+	<title>Карта исторических мест г. Красноярска</title>
+	<!--Иконка в адресной строке страницы-->
+				<link rel="shortcut icon" href="favicon_1.ico" type="image/x-icon">
+	<!--Подключение FontAwesome 4.7.0-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" href="leaflet/plugins/fontawesome 4.7.0/css/font-awesome.min.css" />
+	<!--Подключение Leaflet 1.3.1-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" href="leaflet/leaflet.css" /> 
+				<!--Подключение JS файла-->
+				<script src="leaflet/leaflet.js"></script>
+		<!-- Подключение плагинов Leaflet-->
+			<!--Подключение leaflet.fullscreen 1.1.4 от Bruno B-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" href="leaflet/plugins/fullscreen/Control.FullScreen.css" />
+ 				<!--Подключение JS файла-->
+ 				<script src="leaflet/plugins/fullscreen/Control.FullScreen.js"></script> 
+			<!--Подключение Leaflet.Locate от Dominik Moritz-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" href="leaflet/plugins/location/L.Control.Locate.min.css" />
+				<!--Подключение JS файла-->
+				<script src="leaflet/plugins/location/L.Control.Locate.min.js"></script>
+			<!--Подключение Leaflet.defaultextent от Alex Nguyen-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" href="leaflet/plugins/defaultextent/leaflet.defaultextent.css" />
+				<!--Подключение JS файла-->
+				<script src="leaflet/plugins/defaultextent/leaflet.defaultextent.js"></script>
+			<!--Подключение Leaflet.EasyButton-->
+				<!--Подключение CSS файла-->
+				<link rel="stylesheet" type="text/css" href="leaflet/plugins/button/easy-button.css">
+				<!--Подключение JS файла-->
+				<script src="leaflet/plugins/button/easy-button.js"></script>
+	<!--Подключение стилей CSS к странице-->
+	<style>
+		/*Стилизация страницы и карты*/
+		body {padding: 0; margin: 0;}
+		html, body, #map {height: 100%; width: 100vw;}
+		/*Стилизация информации в сплывающем окне*/
+		.img_info {height: 134px; width: 214px; border-radius: 4px; margin-top: 10px; border-style: solid; border-color: black; border-width: 2px;}
+		.heading_info {color:black; font-size: 14px; text-align: center; font-weight: bold;}
+		.descr_info {color:black; font-size: 12px; text-align: left;}
+		a.button_info {background: #2981CA; color: white; text-transform: uppercase; text-decoration: none; font-size: 10px; margin: 0; padding: 0; margin-right: 0px; margin-left: 0px; padding-top: 12px; padding-bottom: 12px; padding-right: 77px; padding-left: 77px; border-radius: 4px;}
+		/*Стилизация выбора слоев*/
+		.leaflet-control-layers {
+		box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+		background: #fff;
+		border-radius: 16px;
+		}
+		.leaflet-control-layers-toggle {
+		background-image: url(layers_icons/layers.svg);
+		width: 15px;
+		height: 14px;
+		background-size: 15px 14px;
+		}
+		.leaflet-retina .leaflet-control-layers-toggle {
+		background-image: url(layers_icons/layers.svg);
+		background-size: 15px 14px;
+		}
+		.leaflet-touch .leaflet-control-layers-toggle {
+		width: 30px;
+		height: 30px;
+		}
+	</style>
+</head>
+<body>
+	<!--Создание контейнера карты-->
+	<div id="map"></div>
+	<!--Создание карты через скрипт-->
+	<script>
+	/*Карта с центром в г. Красноярске*/
+	var map = L.map('map', {
+		//Отключение стандартной панели зумирования (чтобы позже ее локализировать)!
+		zoomControl: false,
+		//Создание кнопки fullscreen в правом верхнем углу (отдельной от панели зумирования)!
+		fullscreenControl: true,
+  		fullscreenControlOptions: { forceSeparateButton: true, 
+  								    position: 'topright', 
+  									title: 'Перейти в полноэкранный режим' },
+    	//Координаты Красноярска (взяты из OSM)
+    	center: [56.0090968, 92.8725147], 
+    	//Масштаб карты при загрзке
+    	zoom: 11, 
+    	//Минимальный масштаб карты (чтобы был виден только Красноярск)
+    	minZoom: 11,
+    	//Максимальный масштаб карты
+    	maxZoom: 18});
+	/*Загрузка тайлов OSM*/
+	L.tileLayer(/*'http://{s}.tile.osm.org/{z}/{x}/{y}.png',*/ 'http://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {detectRetina:true, minNativeZoom: 11, maxNativeZoom: 18,
+    attribution: '&copy; <a href="https://vk.com/ruttc_sl" target="_blank">Сергей Рутц</a> | &copy; <a href="http://www.krasplace.ru/" target="_blank">Красное место</a> | &copy; Участники <a href="http://osm.org/copyright">OpenStreetMap</a>'}).addTo(map);
+	/*Создание собственной панели зумирования!*/
+	L.control.zoom({position: 'topright', zoomInTitle: 'Приблизить', zoomOutTitle: 'Отдалить'}).addTo(map);
+	/*Создание кнопки 'Масштаб по умолчанию'*/
+	/*L.control.defaultExtent({title: 'Масштаб по умолчанию', position: 'topright'}).addTo(map);*/
+	/*Создание кнопки 'Сброс настроек карты'*/
+	/*L.easyButton({position: 'topright',
+  	states:[{
+      icon: 'fa fa-undo',
+      title: 'Сбросить настройки карты',
+      onClick: function(){ 
+      	map.setView([56.0090968, 92.8725147],13); 
+      	map.removeLayer(homesteads);
+      	map.removeLayer(churches);
+      	map.removeLayer(trading_houses);
+      	map.removeLayer(profitable_houses);
+      }
+    }]
+}).addTo(map);*/
+	/*Создание кнопки геолокации*/
+	L.control.locate({position: 'topright', strings: {title: "Показать мое местоположение", 
+													  metersUnit: "метрах", 
+													  feetUnit: "шагах",
+													  popup: "Вы находитесь в {distance} {unit} от этого пункта",
+        											  outsideMapBoundsMsg: "Кажется, вы находитесь за пределами карты"}
+        			          																							}).addTo(map);
+	/*Создание скейла (только в метрах!)*/
+	L.control.scale({imperial: false}).addTo(map);
+	/*Содержание карты*/
+		//Стилизация маркеров
+			//Торговые / доходные дома
+			var greenIcon = new L.Icon({
+  				iconUrl: 'marker_icons/marker-icon-2x-green.png',
+  				shadowUrl: 'marker_icons/marker-shadow.png',
+  				iconSize: [25, 41],
+  				iconAnchor: [12, 41],
+  				popupAnchor: [1, -34],
+  				shadowSize: [41, 41]
+			});
+			//Церкви
+			var redIcon = new L.Icon({
+  				iconUrl: 'marker_icons/marker-icon-2x-red.png',
+  				shadowUrl: 'marker_icons/marker-shadow.png',
+  				iconSize: [25, 41],
+  				iconAnchor: [12, 41],
+  				popupAnchor: [1, -34],
+  				shadowSize: [41, 41]
+			});
+			//Школы / училища
+			var violetIcon = new L.Icon({
+  				iconUrl: 'marker_icons/marker-icon-2x-violet.png',
+  				shadowUrl: 'marker_icons/marker-shadow.png',
+  				iconSize: [25, 41],
+  				iconAnchor: [12, 41],
+  				popupAnchor: [1, -34],
+  				shadowSize: [41, 41]
+  			});
+  			//Приюты
+  			var orangeIcon = new L.Icon({
+  				iconUrl: 'marker_icons/marker-icon-2x-orange.png',
+  				shadowUrl: 'marker_icons/marker-shadow.png',
+  				iconSize: [25, 41],
+  				iconAnchor: [12, 41],
+  				popupAnchor: [1, -34],
+  				shadowSize: [41, 41]
+  			});
+		//Создание маркеров усадеб
+		var homestead_1 = L.marker([55.99606, 92.80878]).bindPopup('<p class="heading_info">Усадьба Г.В. Юдина</p><p class="descr_info">Адрес: Мелькомбинатская, 2/1</p>'),
+			homestead_2 = L.marker([56.0127, 92.85881]).bindPopup('<p class="heading_info">Усадьба<br>Иноземцева-Никонова</p><p class="descr_info">Адрес: Ленина, 115</p>'),
+			homestead_3 = L.marker([56.01459, 92.86659]).bindPopup('<p class="heading_info">Усадьба казака<br>Ермолаева</p><p class="descr_info">Адрес: Марковского, 67<br>Перенсона, 34</p>'),
+			homestead_4 = L.marker([56.01136, 92.87902]).bindPopup('<p class="heading_info">Усадьба Лотоцкого</p><p class="descr_info">Адрес: Карла Маркса, 44/2</p>'),
+			homestead_5 = L.marker([56.01116, 92.88038]).bindPopup('<p class="heading_info">Усадьба Манжос-Белого-<br>мещанина Колегова</p><p class="descr_info">Адрес: Карла Маркса, 40</p>'),
+			homestead_6 = L.marker([56.01046, 92.82347]).bindPopup('<p class="heading_info">Усадьба Н.А.Колесин-<br>ского</p><p class="descr_info">Адрес: Парадовского, 30</p>'),
+			homestead_7 = L.marker([56.01316, 92.88555]).bindPopup('<p class="heading_info">Усадьба Р.И.Шнейдер</p><p class="descr_info">Адрес: проспект Мира, 26</p>'),
+			homestead_8 = L.marker([56.00812, 92.84867]).bindPopup('<p class="heading_info">Усадьба С.В.Телегина</p><p class="descr_info">Адрес: Горького, 15 а</p>'),
+			homestead_9 = L.marker([56.01489, 92.87051]).bindPopup('<p class="heading_info">Усадьба Стариковой</p><p class="descr_info">Адрес: Марковского, 51</p>');
+				//Объединение маркеров усадеб в группу
+				var homesteads = L.layerGroup([homestead_1, homestead_2, homestead_3, 
+											   homestead_4, homestead_5, homestead_6,
+											   homestead_7, homestead_8, homestead_9]);
+		//Создание маркеров церквей
+		var	church_1 = L.marker([56.01419, 92.85599], {icon: redIcon}).bindPopup('<p class="heading_info">Всехсвятская церковь</p><p class="descr_info"><b>Год постройки:</b> Построена в 1798 году (дерево). Сгорела в 1812 году. К 1820 году отсроена (камен.)<br><b>Нынешнее состояние:</b> Снесена в 30-е годы 20 века. В 40-е годы на ее месте находился завод "Квант", сейчас ТК Квант.<br><b>Современный адрес:</b> Красной Армии, 10</p>'), 
+			church_2 = L.marker([56.01425, 92.88623], {icon: redIcon}).bindPopup('<p class="heading_info">Благовещенская церковь</p><p class="descr_info"><b>Год постройки:</b> Построена в 1804-1813 годах<br><b>Кто строил:</b> Иван Прохоров, И. И. Огрысков, Григорий Бусыгин и Поспелов, Егор Пороховщиков, Петр Федорович Ларионов, реставрировал в  1983 году А.В.Топчиев<br><b>Нынешнее состояние:</b> функционирует<br><b>Современный адрес:</b> Ленина, 15</p>'),
+			church_3 = L.marker([56.01289, 92.87672], {icon: redIcon}).bindPopup('<p class="heading_info">Покровская церковь</p><p class="descr_info"><b>Год постройки:</b> Построена в 1785-1795 годах<br><b>Кто строил:</b> «Церковный строитель» дворянин Михаил Юшков, потенциальные строители: старшина цеха Степан Лещев, «старшинский товарищ» Василий Гатилов, мастера цеховые Иван Помаскин, Алексей Казаретин, братья Иван и Савва Федоровы.<br><b>Нынешнее состояние:</b> функционирует<br><b>Современный адрес:</b> Сурикова, 26</p>'),
+			church_4 = L.marker([56.00763, 92.84752], {icon: redIcon}).bindPopup('<p class="heading_info">Римско-Католический костел</p><p class="descr_info"><b>Год постройки:</b> Построен в 1908-1911 годах<br><b>Кто строил:</b> В. А. Соколовский<br><b>Нынешнее состояние:</b> функционирует<br><b>Современный адрес:</b> Декабристов, 20</p>'),
+			church_5 = L.marker([56.01253, 92.89474], {icon: redIcon}).bindPopup('<p class="heading_info">Рождественский (Воскресенский) собор на Стрелке</p><p class="descr_info"><b>Год постройки:</b> стротельство началось в 1759 году<br><b>Кто строил:</b> начал строить Петр Титович Сокольников, достроил Савва Паклин<br><b>Нынешнее состояние:</b> снесена в 1935 году. Сейчас на ее месте находится Красноярская краевая филармония<br><b>Современный адрес:</b> проспект Мира, 2Б</p>'),
+			church_6 = L.marker([56.01158, 92.8524], {icon: redIcon}).bindPopup('<p class="heading_info">Кафедральный собор</p><p class="descr_info"><b>Год постройки:</b> Построен в 1845-1849 годах<br><b>Кто строил:</b> Константин Андреевич Тон, но 29 сентября 1849 года, верхние своды с кумполом пали, стены растрескались и здание все, кроме колокольни, было разобрано.После 1849 года собор восстанавливал И.Г.Щёголев, наблюдал за постройкой архитектор Яков Набалов<br><b>Нынешнее состояние:</b> был взорван в 1936 году. Сейчас на его месте находится Правительство Красноярского края<br><b>Современный адрес:</b> проспект Мира, 110</p>'),
+			church_7 = L.marker([56.01151, 92.84795],{icon: redIcon}).bindPopup('<p class="heading_info">Архиерейский дом</p><p class="descr_info"><b>Год постройки:</b> Построен в 1864 году (дерево), в 1890-1900 годах перестроено (камен.)<br><b>Кто строил:</b>Хейн (дерево), Морозов и Масленников (камен.)<br><b>Нынешнее состояние:</b> функционирует<br><b>Современный адрес:</b>  Горького, 27</p>');
+				//Объединение маркеров церквей в группу
+				var churches = L.layerGroup([church_1, church_2, church_3,
+											 church_4, church_5, church_6,
+											 church_7]);
+		//Создание маркеров торговых / доходных домов
+			//Торговые дома
+		var torg_house_1 = L.marker([56.01143, 92.86314], {icon: greenIcon}).bindPopup('<p class="heading_info">Торговый дом<br>Н.Г. Гадалова</p><p class="descr_info">Адрес: проспект Мира, 79</p>'),
+			torg_house_2 = L.marker([56.01192, 92.87178], {icon: greenIcon}).bindPopup('<p class="heading_info">Торговый дом<br>«А.А.Смирнов<br>и сыновья»</p><p class="descr_info">Адрес: проспект Мира, 59</p>'),
+			torg_house_3 = L.marker([56.01207, 92.87449], {icon: greenIcon}).bindPopup('<p class="heading_info">Здание торгового дома<br>«Ревильон братья»</p><p class="descr_info">Адрес: проспект Мира, 49</p>'),
+			torg_house_4 = L.marker([56.01313, 92.88074], {icon: greenIcon}).bindPopup('<p class="heading_info">Дом В.Т. Гадалова.</p><p class="descr_info">Адрес: проспект Мира, 44/Парижской Коммуны, 23</p>'),
+			torg_house_5 = L.marker([56.01191, 92.86434], {icon: greenIcon}).bindPopup('<p class="heading_info">Дом купца И.Г.Гадалова.</p><p class="descr_info">Адрес: проспект Мира, 90</p>'),
+			torg_house_6 = L.marker([56.0124, 92.85886], {icon: greenIcon}).bindPopup('<p class="heading_info">Дом Иннокентия Гадалова.</p><p class="descr_info">Адрес: Диктатуры Пролетариата, 34</p>'),
+			//Доходные дома
+			torg_house_7 = L.marker([56.01173, 92.8605], {icon: greenIcon}).bindPopup('<p class="heading_info">Доходный дом<br>Духовного ведомства</p><p class="descr_info">Адрес: проспект Мира, 98</p>'),
+			torg_house_8 = L.marker([56.01181, 92.86173], {icon: greenIcon}).bindPopup('<p class="heading_info">Доходный дом Либман</p><p class="descr_info">Адрес: проспект Мира,96</p>'),
+			torg_house_9 = L.marker([56.01196, 92.86547], {icon: greenIcon}).bindPopup('<p class="heading_info">Доходный дом<br>М.И.Семенова<br>и И.И.Романова</p><p class="descr_info">Адрес: проспект Мира, 86</p>');
+				//Объединение маркеров торговых / доходных домов в группу
+				var torg_houses = L.layerGroup([torg_house_1, torg_house_2, torg_house_3,
+												torg_house_4, torg_house_5, torg_house_6,
+												torg_house_7, torg_house_8, torg_house_9]);
+		//Создание маркеров школ / училищ
+		var school_1 = L.marker([56.01221, 92.84067], {icon: violetIcon}).bindPopup('<p class="heading_info">Второе городское училище</p><p class="descr_info"><p class="descr_info"><b>Год постройки:</b> Открыто в 1866 году (дерево - согласно предложению и настоянию генерал-губернатора П.Н.Замятнина), в 1881 году закрыто, но 1884 году по настоянию енисейского губернатора И.К.Педашенко открыто. 1908-1909 гг. - постройка каменного здания. В 1918 здесь находился штаб Красной гвардии, руководивший Мариинским и Клюквенным фронтами в борьбе с интервентами. В 1920-е годы здесь размещались артиллерийские курсы, школа № 9 1-ой ступени и школа № 1 2-ой ступени, затем – ж.д. школа № 6, а с 1930г. более 50 лет – школа № 28.<br><b>Кто строил:</b> Каменное здание  В.А.Соколовский<br><b>Нынешнее состояние:</b> Сейчас здесь расположена специализированная детско-юношеская спортивная школа олимпийского резерва СДЮШОР<br><b>Адрес:</b> Ленина, 150</p>'),
+			school_2 = L.marker([56.00976, 92.82022], {icon: violetIcon}).bindPopup('<p class="heading_info">Городское училище в Николаевке</p><p class="descr_info"><b>Год постройки:</b> Построено в 1913-1915 годах<br><b>Кто строил:</b> Разработка плана и сметы С.Г. Дриженко. Строила специальная строительная комиссия. В состав этой комиссии вошли: А.М.Ветров, А.И.Оносовский, А.В.Телегин, Г.С.Любенецкий, Ф.Н.Лешуков, А.Н.Иванов, Я.И.Смолехо, П.В.Докучаев, В.Ч.Гарле, А.Е.Нефедов<br><b>Нынешнее состояние:</b> С 1999 года в здании располагается телекомпания «СТС-Прима»<br><b>Адрес:</b> Советская,35</p>'),
+			school_3 = L.marker([56.01224, 92.87824], {icon: violetIcon}).bindPopup('<p class="heading_info">Епархиальное женское училище</p><p class="descr_info"><b>Год постройки:</b> Открыто в 5 октября 1886 года. С 1904-1910 постройка нового трехэтажного корпуса. В 1917—1918 годах в здании проходили пленумы Красноярского Совета рабочих и солдатских депутатов, располагался Красноярский комитет РСДРП(б), редакции газет «Красноярский рабочий» и «Сибирская правда». В 1944 году оно передано Красноярскому Геологическому Управлению. Решением исполкома Красноярского краевого совета народных депутатов № 345 от 24.12.86 г. здание отнесено к памятникам истории и культуры краевого значения<br><b>Кто строил:</b> В.А.Соколовский - проект нового трехэтажного корпуса<br><b>Нынешнее состояние:</b> С 1986 года в бывшем учебном корпусе женского Епархиального училища работает музей геологии<br><b>Адрес:</b> проспект Мира, 37</p>'),
+			school_4 = L.marker([56.01385, 92.8724], {icon: violetIcon}).bindPopup('<p class="heading_info">Землемерное училище в Красноярске</p><p class="descr_info"><b>Год постройки:</b> Открыто в 1909 году. В 1910 году землемерное училище переехало в каменный двухэтажный дом (городского головы Прейна) на усадьбе, принадлежавшей Фриме Гершевне Цукерман. В 1921 году землемерное училище  стало называться  землеустроительным техникумом. А затем земельным политехникумом. В 1935 году здание надстроили на два этажа и в нем открылась новая городская телефонная станция на 1 000 номеров<br><b>Адрес:</b> Ленина, 68</p>');
+    			//Объединение маркеров школ / училищ в группу
+    			var schools = L.layerGroup([school_1, school_2, school_3, school_4]);
+		//Создание маркеров приютов
+		var priut_1 = L.marker([56.01386, 92.85329], {icon: orangeIcon}).bindPopup('<p class="heading_info">Богадельня Т.И.Щеголевой</p><p class="descr_info"><b>Год постройки:</b> Построена в 1870 году. Открытие произошло 5 октября 1875 года, в 1921-22 годах в здании находился губтрамот, а с 1923 губотдел труда. С 1934 года в здании находилась школа № 22, затем ателье химчистки, магазин «Арсенал».<br><b>Нынешнее состояние:</b> Сейчас в здании разместился офис компании ЕТК.<br><b>Адрес:</b> Красной Армии, 12/Обороны, 1</p>'),
+			priut_2 = L.marker([56.01367, 92.87826], {icon: orangeIcon}).bindPopup('<p class="heading_info">Владимирский детский приют</p><p class="descr_info"><b>Год постройки:</b> Открыт 15 июля 1848 года в деревянном флигеле  дома коллежского советника  В.П.Голубкова до 1876. В 1873 году Т.И.Щеголева пожертвовала приюту каменный двухэтажный дом по Благовещенской улице. В 1920 году Владимирский приют, как буржуазное проявление, был закрыт, а само здание было муниципализировано. В 1922 году здесь размещался детский дом №2, в 1923 — курсы милиции. С 1924 по 1928 — детдом №4, в 1928 — 1934 гг. школа глухонемых, позже Управление геологии.<br><b>Нынешнее состояние:</b> Сейчас в этом здании располагаются много организаций ГНИПЦ Природа, управление геодезии и картографии, дирекция по особоохраняемым природным территориям и т.д<br><b>Адрес:</b> Ленина, 41</p>'),
+			priut_3 = L.marker([56.00483, 92.84628], {icon: orangeIcon}).bindPopup('<p class="heading_info">Ольгинский приют</p><p class="descr_info"><b>Год постройки:</b> Открыт 9 мая 1889 года на углу Гостинской улицы и Почтамтского переулка в доме, находившимся на нем. Собственное здание начали строить в 1911 году. Подряд на постройку взял красноярский мещанин Иван Михайлович Дмитриев. 21 ноября 1912 года состоялось торжественное открытие здания для приюта. В 20-ые годы ХХ века в здании была колония для детей-сирот, потерявших родителей в годы гражданской войны. В годы Великой Отечественной войны, здесь располагался госпиталь, но обучение в школе продолжалось. С 1950 года в здании располагался спальный корпус школы-интерната № 1. Как школа для детей с ограниченными возможностями здоровья, учреждение существует с 1987 года. В 2000 году из-за аварийного состояния школа была закрыта.<br><b>Кто строил:</b> С.Г. Дриженко<br><b>Нынешнее состояние:</b> 24 декабря 2008 торжественно открылось здание «Ольгинский приют» краевого государственного учреждения для детей с ограниченными возможностями «Красноярская специальная (коррекционная) общеобразовательная школа IV вида №1»<br><b>Адрес:</b> Ломоносова, 9</p>');
+				//Объединение маркеров приютов в группу
+				var priuti = L.layerGroup([priut_1, priut_2, priut_3]);
+		//Создание панели переключения слоев
+		var baseLayers = {};
+		var overlays = {"Усадьбы (<b>9</b>)": homesteads, "Церкви (<b>7</b>)": churches, "Торговые / доходные дома (<b>9</b>)": torg_houses, "Школы / училища (<b>4</b>)": schools, "Приюты (<b>3</b>)": priuti};
+		L.control.layers(baseLayers, overlays, {position: 'topleft'}).addTo(map);
+	/*Конец содержания карты*/
+	</script>
+</body>
+</html>

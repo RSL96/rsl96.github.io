@@ -102,7 +102,7 @@
     	maxZoom: 18});
 	/*Загрузка тайлов OSM*/
 	L.tileLayer(/*'http://{s}.tile.osm.org/{z}/{x}/{y}.png',*/ 'http://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {detectRetina:true, minNativeZoom: 11, maxNativeZoom: 18,
-    attribution: '&copy; <a href="https://vk.com/ruttc_sl" target="_blank">Сергей Рутц</a> | &copy; <a href="http://www.krasplace.ru/" target="_blank">Красное место</a> | &copy; Участники <a href="http://osm.org/copyright">OpenStreetMap</a>'}).addTo(map);
+    attribution: '&copy; <a href="https://vk.com/ruttc_sl" target="_blank">Сергей Рутц</a> | /*&copy; <a href="http://www.krasplace.ru/" target="_blank">Красное место</a> |*/ &copy; Участники <a href="http://osm.org/copyright">OpenStreetMap</a>'}).addTo(map);
 	/*Создание собственной панели зумирования!*/
 	L.control.zoom({position: 'topright', zoomInTitle: 'Приблизить', zoomOutTitle: 'Отдалить'}).addTo(map);
 	/*Создание кнопки 'Масштаб по умолчанию'*/
